@@ -27,7 +27,7 @@ A web application built with React and NodeJs that allows users to analyze their
     npm i
     npx nodemon index.js
     ```
-4. Open one more terminal and run then python server:
+4. Open one more terminal and then run the python server:
 
     ```bash
     flask run --reload
