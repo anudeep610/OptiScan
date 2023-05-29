@@ -18,14 +18,13 @@ const FormPage = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const [result, setResult] = useState(null);
-
     const [formData, setFormData] = useState({
         name: "",
         age: "",
         gender: "",
         disease: "",
         image: null,
+        email:""
     });
 
     const handlechange = (event) => {
@@ -50,6 +49,7 @@ const FormPage = () => {
         setLoading(true);
         const formDataObj = new FormData();
         formDataObj.append('name', formData.name);
+        formDataObj.append('email', formData.email);
         formDataObj.append('gender', formData.gender);
         formDataObj.append('age', formData.age);
         formDataObj.append('iris', formData.image);
@@ -64,12 +64,21 @@ const FormPage = () => {
             handleShow();
         });
 
-        if (response && response.type === "success") {
+        if (response && response.data.type === "success") {
             setLoading(false);
-            setResult("cataract");
+            setAlertText("Result : " + response.data.data + "," + response.data.message);
+            handleShow();
+            setFormData({
+                name: "",
+                age: "",
+                gender: "",
+                disease: "",
+                image: null,
+                email:""
+            });
         } else {
             console.log(response);
-            setAlertText("something went wrong");
+            setAlertText("something went wrong ;)");
             handleShow();
         }
         setLoading(false);
@@ -95,7 +104,7 @@ const FormPage = () => {
             </Navbar>
 
             {
-                !loading && result === null && <div className="content-container">
+                !loading && <div className="content-container">
                     <h1 className="text-center my-5 main-heading">"Empower your vision. Unveil the secrets of your eyes."</h1>
                     <div className="prediction-hero-container">
                         <div className="image-container">
@@ -111,6 +120,18 @@ const FormPage = () => {
                                         placeholder="Enter your name"
                                         name="name"
                                         value={formData.name}
+                                        onChange={(e) => handlechange(e)}
+                                        required
+                                    />
+                                </Form.Group>
+
+                                <Form.Group controlId="formBasicName" className="py-3">
+                                    <Form.Label className="label">Email :</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your email"
+                                        name="email"
+                                        value={formData.email}
                                         onChange={(e) => handlechange(e)}
                                         required
                                     />
@@ -162,29 +183,11 @@ const FormPage = () => {
                                     />
                                     <Form.Check
                                         default
-                                        label="Diabetic Retinopathy"
-                                        name="disease"
-                                        type="radio"
-                                        id={`default-radio-2`}
-                                        onChange={(e) => handlechange(e)}
-                                        value={2}
-                                    />
-                                    <Form.Check
-                                        default
                                         label="Myopia"
                                         name="disease"
                                         type="radio"
                                         id={`default-radio-3`}
-                                        value={3}
-                                        onChange={(e) => handlechange(e)}
-                                    />
-                                    <Form.Check
-                                        default
-                                        label="Age Related Macular Degeneration"
-                                        name="disease"
-                                        type="radio"
-                                        id={`default-radio-4`}
-                                        value={4}
+                                        value={2}
                                         onChange={(e) => handlechange(e)}
                                     />
                                     <Form.Check
@@ -194,7 +197,7 @@ const FormPage = () => {
                                         type="radio"
                                         id={`default-radio-5`}
                                         onChange={(e) => handlechange(e)}
-                                        value={5}
+                                        value={3}
                                     />
                                     <Form.Check
                                         default
@@ -202,7 +205,7 @@ const FormPage = () => {
                                         name="disease"
                                         type="radio"
                                         id={`default-radio-6`}
-                                        value={6}
+                                        value={4}
                                         onChange={(e) => handlechange(e)}
                                     />
                                     <Form.Check
@@ -211,7 +214,16 @@ const FormPage = () => {
                                         name="disease"
                                         type="radio"
                                         id={`default-radio-6`}
-                                        value={7}
+                                        value={5}
+                                        onChange={(e) => handlechange(e)}
+                                    />
+                                    <Form.Check
+                                        default
+                                        label="Normal"
+                                        name="disease"
+                                        type="radio"
+                                        id={`default-radio-6`}
+                                        value={6}
                                         onChange={(e) => handlechange(e)}
                                     />
                                 </div>
@@ -223,12 +235,6 @@ const FormPage = () => {
                         </div>
                     </div>
                 </div>
-            }
-
-            {
-                !loading && result !== null && <p>
-                    {result}
-                </p>
             }
 
             {
