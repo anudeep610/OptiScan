@@ -24,6 +24,7 @@ const storage = multer.diskStorage({
         cb(null, "iris.jpg");
     },
 });
+
 const upload = multer({ storage: storage });
 const irisUpload = upload.fields([{ name: "iris", maxCount: 1 }]);
 
@@ -64,14 +65,14 @@ const getDiseaseName = async(option, result) => {
             if(result === 0)
                 name = 'Normal'
             else
-                name = 'No normal'
+                name = 'Not normal'
             break;
         default: name = 'undefined'
     }
     return name;
 };
 
-const generatePDF = async(name, age, gender, email, diseaseName) => {
+const generatePDF = async(name, age, gender, email, diseaseName, percentage) => {
     const doc = new PDFDocument();
 
     const writeStream = fs.createWriteStream('D:/major-project/backend/upload/report.pdf');
@@ -98,6 +99,8 @@ const generatePDF = async(name, age, gender, email, diseaseName) => {
     doc.moveTo(35, 270).lineTo(570, 270).stroke();
     doc.moveTo(35, 272).lineTo(570, 272).stroke();
     doc.fontSize(20).text(`Result: ${diseaseName}`, 35, 310);
+    doc.moveDown(20);
+    doc.fontSize(20).text(`Prediction percentage: ${(parseFloat(percentage) * 100).toString()}`, 35, 330);
     doc.moveDown(1);
     doc.fontSize(14).font('Helvetica-Bold').text('Tips for Healthy Eyes', { underline: true });
     doc.moveDown(0.5);
@@ -226,13 +229,14 @@ router.post("/analyse", irisUpload, async (req, res) => {
         const response = await axios.post('http://localhost:5000/check_disease',{user_selected_choice: disease});
         if(response.status === 200){
             const diseaseName = await getDiseaseName(parseInt(disease), parseInt(response.data.predicted_class_idx));
-            const pdfResult = await generatePDF(name, age, gender, email, diseaseName);
+            const percentage = response.data.percentage;
+            const pdfResult = await generatePDF(name, age, gender, email, diseaseName, percentage);
             const mailResult = await sendEmailWithAttachment(name, email);
             console.log(pdfResult, mailResult);
             if(pdfResult && mailResult){
-                res.send({type: "success", message:"Successfully sent the report to the mail id.", data: diseaseName});
+                res.send({type: "success", message:"Successfully sent the report to the mail id.", data: diseaseName, percentage:percentage});
             }else if(pdfResult && !mailResult){
-                res.send({type: "success", message:"Email address not valid", data: diseaseName});
+                res.send({type: "success", message:"Email address not valid", data: diseaseName, percentage:percentage});
             }else{
                 res.status(500).send({ type: "error", message: "Something Went Wrong" });
             }
