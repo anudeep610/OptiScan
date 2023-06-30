@@ -68,32 +68,32 @@ function HomePage() {
                     <Row className="justify-content-center">
                         <Col md={5} className="mb-5">
                             <div className="statistics-card p-4 text-center">
-                                <h3 className="mb-3 sub-heading">Cataracts</h3>
-                                <p className="mb-0">10 million cases per year</p>
+                                <h3 className="mb-3 sub-heading">Cataract</h3>
+                                <p className="mb-0">1 million cases per year</p>
                             </div>
                         </Col>
                         <Col md={5} className="mb-5">
                             <div className="statistics-card p-4 text-center">
-                                <h3 className="mb-3 sub-heading">Glaucoma</h3>
+                                <h3 className="mb-3 sub-heading">Hypertension</h3>
                                 <p className="mb-0">3 million cases per year</p>
                             </div>
                         </Col>
                         <Col md={5} className="mb-5">
                             <div className="statistics-card p-4 text-center">
-                                <h3 className="mb-3 sub-heading">Diabetic Retinopathy</h3>
-                                <p className="mb-0">2 million cases per year</p>
+                                <h3 className="mb-3 sub-heading">Gluacoma</h3>
+                                <p className="mb-0">1 million cases per year</p>
                             </div>
                         </Col>
                         <Col md={5} className="mb-5">
                             <div className="statistics-card p-4 text-center">
-                                <h3 className="mb-3 sub-heading">Diabetic Retinopathy</h3>
-                                <p className="mb-0">2 million cases per year</p>
+                                <h3 className="mb-3 sub-heading">Retinoblastoma(eye cancer)</h3>
+                                <p className="mb-0">100 thousand cases per year</p>
                             </div>
                         </Col>
                         <Col md={5} className="mb-5">
                             <div className="statistics-card p-4 text-center">
-                                <h3 className="mb-3 sub-heading">Diabetic Retinopathy</h3>
-                                <p className="mb-0">2 million cases per year</p>
+                                <h3 className="mb-3 sub-heading">Myopia</h3>
+                                <p className="mb-0">6 million cases per year</p>
                             </div>
                         </Col>
                     </Row>

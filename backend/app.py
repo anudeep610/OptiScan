@@ -57,25 +57,24 @@ def check_for_disease(user_selected_choice):
             # grad_model = tf.keras.models.Model([cataract_model.inputs], [last_conv_layer.output,cataract_model.output])
             # with tf.GradientTape() as tape:
             #     conv_outputs, predictions = grad_model(preprocessed_input)
-            #     loss = predictions.numpy()
-            # loss_value = loss[0,0]
+            #     loss = tf.reduce_mean(predictions[:, 0]).numpy()
             # grads = tape.gradient(loss, conv_outputs)[0]
-            # # pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-            # # heatmap = tf.reduce_mean(tf.multiply(pooled_grads, conv_outputs), axis=-1)
-            # # heatmap = np.maximum(heatmap, 0)
-            # # heatmap /= np.max(heatmap)
+            # pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+            # heatmap = tf.reduce_mean(tf.multiply(pooled_grads, conv_outputs), axis=-1)
+            # heatmap = np.maximum(heatmap, 0)
+            # heatmap /= np.max(heatmap)
 
-            # # # Resize the heatmap to match the input image size
-            # # heatmap_resized = cv2.resize(heatmap, (input_image.width, input_image.height))
+            # # Resize the heatmap to match the input image size
+            # heatmap_resized = cv2.resize(heatmap, (input_image.width, input_image.height))
 
-            # # # Apply the heatmap overlay
-            # # image = cv2.imread(input_image_path)
-            # # heatmap_overlay = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
-            # # output_image = cv2.addWeighted(image, 0.6, heatmap_overlay, 0.4, 0)
+            # # Apply the heatmap overlay
+            # image = cv2.imread(input_image_path)
+            # heatmap_overlay = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
+            # output_image = cv2.addWeighted(image, 0.6, heatmap_overlay, 0.4, 0)
 
-            # # # Save the output image with the heatmap overlay
-            # # output_image_path = 'D:/major-project/backend/upload/heatmap.jpg'
-            # # cv2.imwrite(output_image_path, output_image)
+            # # Save the output image with the heatmap overlay
+            # output_image_path = 'D:/major-project/backend/upload/heatmap.jpg'
+            # cv2.imwrite(output_image_path, output_image)
 
         elif(user_selected_choice==2): ##myopia detection
             myopia_model=load_model(file_path + 'Myopia.hdf5')
