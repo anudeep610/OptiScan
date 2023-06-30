@@ -98,9 +98,16 @@ const generatePDF = async(name, age, gender, email, diseaseName, percentage) => 
         
     doc.moveTo(35, 270).lineTo(570, 270).stroke();
     doc.moveTo(35, 272).lineTo(570, 272).stroke();
-    doc.fontSize(20).text(`Result: ${diseaseName}`, 35, 310);
+
+    doc.image('D:/major-project/backend/upload/iris.jpg', 50, 310, {
+        width: 125,
+        height: 125
+    });
+
     doc.moveDown(20);
-    doc.fontSize(20).text(`Prediction percentage: ${(parseFloat(percentage) * 100).toString()}`, 35, 330);
+    doc.fontSize(20).text(`Result: ${diseaseName}`, 35, 450);
+    doc.moveDown(20);
+    doc.fontSize(20).text(`Prediction percentage: ${(parseFloat(percentage) * 100).toString()}`, 35, 480);
     doc.moveDown(1);
     doc.fontSize(14).font('Helvetica-Bold').text('Tips for Healthy Eyes', { underline: true });
     doc.moveDown(0.5);
