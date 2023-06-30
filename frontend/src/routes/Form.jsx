@@ -22,18 +22,33 @@ const FormPage = () => {
         name: "",
         age: "",
         gender: "",
-        disease: "",
+        disease: [],
         image: null,
         email:""
     });
 
     const handlechange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-        }));
+        const { name, value, checked } = event.target;
+        if (name === 'disease') {
+            if (checked) {
+                setFormData((prevFormData) => ({
+                ...prevFormData,
+                disease: [...prevFormData.disease, value],
+                }));
+            } else {
+                setFormData((prevFormData) => ({
+                ...prevFormData,
+                disease: prevFormData.disease.filter((d) => d !== value),
+                }));
+            }
+            } else {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+        }
     };
+
 
     const handleImageChange = (event) => {
         const image = event.target.files[0];
@@ -46,6 +61,12 @@ const FormPage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        if (formData.disease.length === 0) {
+            setAlertText("Please select at least one disease.");
+            handleShow();
+            return;
+        }
+        
         setLoading(true);
         const formDataObj = new FormData();
         formDataObj.append('name', formData.name);
@@ -72,7 +93,7 @@ const FormPage = () => {
                 name: "",
                 age: "",
                 gender: "",
-                disease: "",
+                disease: [],
                 image: null,
                 email:""
             });
@@ -80,6 +101,14 @@ const FormPage = () => {
             console.log(response);
             setAlertText("something went wrong ;)");
             handleShow();
+            setFormData({
+                name: "",
+                age: "",
+                gender: "",
+                disease: [],
+                image: null,
+                email:""
+            });
         }
         setLoading(false);
     };
@@ -175,18 +204,17 @@ const FormPage = () => {
                                         default
                                         label="Cataract"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-1`}
+                                        type="checkbox"
+                                        id={`default-checkbox-1`}
                                         value={1}
                                         onChange={(e) => handlechange(e)}
-                                        required
                                     />
                                     <Form.Check
                                         default
                                         label="Myopia"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-3`}
+                                        type="checkbox"
+                                        id={`default-checkbox-3`}
                                         value={2}
                                         onChange={(e) => handlechange(e)}
                                     />
@@ -194,8 +222,8 @@ const FormPage = () => {
                                         default
                                         label="Hypertension"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-5`}
+                                        type="checkbox"
+                                        id={`default-checkbox-5`}
                                         onChange={(e) => handlechange(e)}
                                         value={3}
                                     />
@@ -203,8 +231,8 @@ const FormPage = () => {
                                         default
                                         label="Glaucoma"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-6`}
+                                        type="checkbox"
+                                        id={`default-checkbox-6`}
                                         value={4}
                                         onChange={(e) => handlechange(e)}
                                     />
@@ -212,8 +240,8 @@ const FormPage = () => {
                                         default
                                         label="Retinoblastoma"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-6`}
+                                        type="checkbox"
+                                        id={`default-checkbox-6`}
                                         value={5}
                                         onChange={(e) => handlechange(e)}
                                     />
@@ -221,8 +249,8 @@ const FormPage = () => {
                                         default
                                         label="Normal"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-6`}
+                                        type="checkbox"
+                                        id={`default-checkbox-6`}
                                         value={6}
                                         onChange={(e) => handlechange(e)}
                                     />
