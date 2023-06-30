@@ -254,9 +254,9 @@ router.post("/analyse", irisUpload, async (req, res) => {
             const mailResult = await sendEmailWithAttachment(name, email);
             console.log(pdfResult, mailResult);
             if(pdfResult && mailResult){
-                res.send({type: "success", message:"Successfully sent the report to the mail id.", data: diseaseName, percentage:percentage});
+                res.send({type: "success", message:"Successfully sent the report to the mail id.", data: diseases});
             }else if(pdfResult && !mailResult){
-                res.send({type: "success", message:"Email address not valid", data: diseaseName, percentage:percentage});
+                res.send({type: "success", message:"Email address not valid", data: diseases});
             }else{
                 res.status(500).send({ type: "error", message: "Something Went Wrong" });
             }

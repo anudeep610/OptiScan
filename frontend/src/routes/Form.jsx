@@ -87,7 +87,31 @@ const FormPage = () => {
 
         if (response && response.data.type === "success") {
             setLoading(false);
-            setAlertText("Result : " + response.data.data + "," + response.data.message);
+            const resultData = response.data.data; // Array containing the result data
+            // Construct the table HTML
+            const tableHTML = `
+              <table>
+                <thead>
+                  <tr>
+                    <th style="padding-right: 10px;">Disease</th>
+                    <th>Percentage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${resultData
+                    .map(
+                      (result) => `
+                        <tr>
+                          <td style="padding-right: 10px;">${result[0]}</td>
+                          <td>${(result[1] * 100).toFixed(2)}</td>
+                        </tr>
+                      `
+                    )
+                    .join("")}
+                </tbody>
+              </table>
+            `;
+            setAlertText( <div> <p>{response.data.message}</p> <div dangerouslySetInnerHTML={{ __html: tableHTML }}></div> </div>); // Set the table HTML as the alert text
             handleShow();
             setFormData({
                 name: "",
@@ -95,9 +119,9 @@ const FormPage = () => {
                 gender: "",
                 disease: [],
                 image: null,
-                email:""
+                email: ""
             });
-        } else {
+        }else {
             console.log(response);
             setAlertText("something went wrong ;)");
             handleShow();
