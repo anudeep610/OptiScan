@@ -85,7 +85,7 @@ const FormPage = () => {
             handleShow();
         });
 
-        if (response && response.data.type === "success") {
+        if (response && response.data.type === "success" && response.data.valid === 1) {
             setLoading(false);
             const resultData = response.data.data; // Array containing the result data
             // Construct the table HTML
@@ -112,6 +112,17 @@ const FormPage = () => {
               </table>
             `;
             setAlertText( <div> <p>{response.data.message}</p> <div dangerouslySetInnerHTML={{ __html: tableHTML }}></div> </div>); // Set the table HTML as the alert text
+            handleShow();
+            setFormData({
+                name: "",
+                age: "",
+                gender: "",
+                disease: [],
+                image: null,
+                email: ""
+            });
+        }else if(response && response.data.type === "success" && response.data.valid === 0){
+            setAlertText(response.data.message);
             handleShow();
             setFormData({
                 name: "",
@@ -269,7 +280,7 @@ const FormPage = () => {
                                         value={5}
                                         onChange={(e) => handlechange(e)}
                                     />
-                                    <Form.Check
+                                    {/* <Form.Check
                                         default
                                         label="Normal"
                                         name="disease"
@@ -277,7 +288,7 @@ const FormPage = () => {
                                         id={`default-checkbox-6`}
                                         value={6}
                                         onChange={(e) => handlechange(e)}
-                                    />
+                                    /> */}
                                 </div>
 
                                 <Button style={{ backgroundColor: "#33627c", outline: "none" }} variant="primary" type="" className="my-3">
@@ -318,7 +329,7 @@ const FormPage = () => {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Response from API</Modal.Title>
+                    <Modal.Title>Result</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {alertText}

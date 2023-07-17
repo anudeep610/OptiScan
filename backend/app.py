@@ -38,6 +38,17 @@ def generate_image_datagenerator(select_img):
     return predicting_generator
 
 
+def check_image_validity():
+    predicting_generator=generate_image_datagenerator(select_img)
+    validity_model = load_model(file_path + 'input.hdf5')
+    pred1 = validity_model.predict_generator(predicting_generator)
+    max = np.argmax(pred1)
+    print(max)
+    if max == 0:
+        return 1
+    else: 
+        return 0
+
 def check_for_disease(user_selected_choice):
         predicting_generator=generate_image_datagenerator(select_img)
         predPerc = 0
@@ -55,14 +66,14 @@ def check_for_disease(user_selected_choice):
             
 
         elif(user_selected_choice==3):  ##hypertension detection
-            hyp_gla_model=load_model(file_path + 'Hyp_Gla.hdf5')
+            hyp_gla_model=load_model(file_path + 'HN1.hdf5')
             pred1 = hyp_gla_model.predict_generator(predicting_generator)
             predicted_class_idx1=np.argmax(pred1,axis=1) ##1 for hypertension
             predPerc = pred1[0][predicted_class_idx1]
             
         
         elif(user_selected_choice==4):##glaucoma detection
-            hyp_gla_model=load_model(file_path + 'Hyp_Gla.hdf5')
+            hyp_gla_model=load_model(file_path + 'GN1.hdf5')
             pred1 = hyp_gla_model.predict_generator(predicting_generator)
             predicted_class_idx1=np.argmax(pred1,axis=1)  ##0 for glaucoma
             predPerc = pred1[0][predicted_class_idx1]
@@ -85,14 +96,17 @@ def check_for_disease(user_selected_choice):
 
 @app.route('/check_disease', methods=['POST'])
 def check_disease():
+    validity = check_image_validity()
+    if validity == 0:
+        return json.dumps({'valid':0})
     diseases = [int(i) for i in request.json['user_selected_choice'].split(',')]
     results = []
     for i in diseases:
         result = check_for_disease(i)
         predicted_class_idx, percentage = int(result[0]), float(result[1][0])
         results.append([predicted_class_idx, percentage])
-    return json.dumps({'result': results})
+    return json.dumps({'valid':0,'result': results})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

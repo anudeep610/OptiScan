@@ -242,6 +242,10 @@ router.post("/analyse", irisUpload, async (req, res) => {
 
         const response = await axios.post('http://localhost:5000/check_disease',{user_selected_choice: disease});
         if(response.status === 200){
+            if(response.data.valid === 0){
+                res.status(200).send({ type: "success", message: "Invalid image, please upload a iris image.", "valid":0 });
+                return;
+            }
             const results = response.data.result;
             const diseases = []
             for(let i = 0; i<results.length; i++){
@@ -249,19 +253,18 @@ router.post("/analyse", irisUpload, async (req, res) => {
                 const percentage = results[i][1];
                 diseases.push([diseaseName, percentage])
             }
-            console.log(diseases)
             const pdfResult = await generatePDF(name, age, gender, email, diseases);
             const mailResult = await sendEmailWithAttachment(name, email);
             console.log(pdfResult, mailResult);
             if(pdfResult && mailResult){
-                res.send({type: "success", message:"Successfully sent the report to the mail id.", data: diseases});
+                res.send({type: "success", message:"Successfully sent the report to the mail id.", data: diseases, "valid":1});
             }else if(pdfResult && !mailResult){
-                res.send({type: "success", message:"Email address not valid", data: diseases});
+                res.send({type: "success", message:"Email address not valid", data: diseases, "valid":1});
             }else{
-                res.status(500).send({ type: "error", message: "Something Went Wrong" });
+                res.status(500).send({ type: "error", message: "Something Went Wrong", "valid":0 });
             }
         }else{
-            res.status(500).send({ type: "error", message: "something went wrong" });
+            res.status(500).send({ type: "error", message: "something went wrong", "valid":0 });
         }
         
     } catch (err) {
