@@ -22,18 +22,33 @@ const FormPage = () => {
         name: "",
         age: "",
         gender: "",
-        disease: "",
+        disease: [],
         image: null,
         email:""
     });
 
     const handlechange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-        }));
+        const { name, value, checked } = event.target;
+        if (name === 'disease') {
+            if (checked) {
+                setFormData((prevFormData) => ({
+                ...prevFormData,
+                disease: [...prevFormData.disease, value],
+                }));
+            } else {
+                setFormData((prevFormData) => ({
+                ...prevFormData,
+                disease: prevFormData.disease.filter((d) => d !== value),
+                }));
+            }
+            } else {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+        }
     };
+
 
     const handleImageChange = (event) => {
         const image = event.target.files[0];
@@ -46,6 +61,12 @@ const FormPage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        if (formData.disease.length === 0) {
+            setAlertText("Please select at least one disease.");
+            handleShow();
+            return;
+        }
+        
         setLoading(true);
         const formDataObj = new FormData();
         formDataObj.append('name', formData.name);
@@ -64,22 +85,65 @@ const FormPage = () => {
             handleShow();
         });
 
-        if (response && response.data.type === "success") {
+        if (response && response.data.type === "success" && response.data.valid === 1) {
             setLoading(false);
-            setAlertText("Result : " + response.data.data + "," + response.data.message);
+            const resultData = response.data.data; // Array containing the result data
+            // Construct the table HTML
+            const tableHTML = `
+              <table>
+                <thead>
+                  <tr>
+                    <th style="padding-right: 10px;">Disease</th>
+                    <th>Percentage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${resultData
+                    .map(
+                      (result) => `
+                        <tr>
+                          <td style="padding-right: 10px;">${result[0]}</td>
+                          <td>${(result[1] * 100).toFixed(2)}</td>
+                        </tr>
+                      `
+                    )
+                    .join("")}
+                </tbody>
+              </table>
+            `;
+            setAlertText( <div> <p>{response.data.message}</p> <div dangerouslySetInnerHTML={{ __html: tableHTML }}></div> </div>); // Set the table HTML as the alert text
             handleShow();
             setFormData({
                 name: "",
                 age: "",
                 gender: "",
-                disease: "",
+                disease: [],
                 image: null,
-                email:""
+                email: ""
             });
-        } else {
+        }else if(response && response.data.type === "success" && response.data.valid === 0){
+            setAlertText(response.data.message);
+            handleShow();
+            setFormData({
+                name: "",
+                age: "",
+                gender: "",
+                disease: [],
+                image: null,
+                email: ""
+            });
+        }else {
             console.log(response);
             setAlertText("something went wrong ;)");
             handleShow();
+            setFormData({
+                name: "",
+                age: "",
+                gender: "",
+                disease: [],
+                image: null,
+                email:""
+            });
         }
         setLoading(false);
     };
@@ -175,18 +239,17 @@ const FormPage = () => {
                                         default
                                         label="Cataract"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-1`}
+                                        type="checkbox"
+                                        id={`default-checkbox-1`}
                                         value={1}
                                         onChange={(e) => handlechange(e)}
-                                        required
                                     />
                                     <Form.Check
                                         default
                                         label="Myopia"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-3`}
+                                        type="checkbox"
+                                        id={`default-checkbox-3`}
                                         value={2}
                                         onChange={(e) => handlechange(e)}
                                     />
@@ -194,8 +257,8 @@ const FormPage = () => {
                                         default
                                         label="Hypertension"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-5`}
+                                        type="checkbox"
+                                        id={`default-checkbox-5`}
                                         onChange={(e) => handlechange(e)}
                                         value={3}
                                     />
@@ -203,8 +266,8 @@ const FormPage = () => {
                                         default
                                         label="Glaucoma"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-6`}
+                                        type="checkbox"
+                                        id={`default-checkbox-6`}
                                         value={4}
                                         onChange={(e) => handlechange(e)}
                                     />
@@ -212,20 +275,20 @@ const FormPage = () => {
                                         default
                                         label="Retinoblastoma"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-6`}
+                                        type="checkbox"
+                                        id={`default-checkbox-6`}
                                         value={5}
                                         onChange={(e) => handlechange(e)}
                                     />
-                                    <Form.Check
+                                    {/* <Form.Check
                                         default
                                         label="Normal"
                                         name="disease"
-                                        type="radio"
-                                        id={`default-radio-6`}
+                                        type="checkbox"
+                                        id={`default-checkbox-6`}
                                         value={6}
                                         onChange={(e) => handlechange(e)}
-                                    />
+                                    /> */}
                                 </div>
 
                                 <Button style={{ backgroundColor: "#33627c", outline: "none" }} variant="primary" type="" className="my-3">
@@ -266,7 +329,7 @@ const FormPage = () => {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Response from API</Modal.Title>
+                    <Modal.Title>Result</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {alertText}

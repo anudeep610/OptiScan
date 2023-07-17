@@ -6,6 +6,7 @@ import numpy as np
 from keras.models import load_model
 import tensorflow as tf
 import cv2
+import json
 from keras.preprocessing.image import ImageDataGenerator
 
 file_path = 'D:/major-project/backend/trained_models/'
@@ -37,6 +38,17 @@ def generate_image_datagenerator(select_img):
     return predicting_generator
 
 
+def check_image_validity():
+    predicting_generator=generate_image_datagenerator(select_img)
+    validity_model = load_model(file_path + 'input.hdf5')
+    pred1 = validity_model.predict_generator(predicting_generator)
+    max = np.argmax(pred1)
+    print(max)
+    if max == 0:
+        return 1
+    else: 
+        return 0
+
 def check_for_disease(user_selected_choice):
         predicting_generator=generate_image_datagenerator(select_img)
         predPerc = 0
@@ -46,36 +58,6 @@ def check_for_disease(user_selected_choice):
             predicted_class_idx1=np.argmax(pred1,axis=1)  ##0 for cataract
             predPerc = pred1[0][predicted_class_idx1]
 
-            # input_image_path = 'D:/major-project/backend/upload/iris.jpg'
-            # input_image = tf.keras.preprocessing.image.load_img(input_image_path, target_size=(224, 224))
-            # input_array = tf.keras.preprocessing.image.img_to_array(input_image)
-            # expanded_array = np.expand_dims(input_array, axis=0)
-            # preprocessed_input = tf.keras.applications.vgg19.preprocess_input(expanded_array)
-
-            # # Perform gradient-based class activation mapping (CAM)
-            # last_conv_layer = cataract_model.get_layer('block5_conv3')
-            # grad_model = tf.keras.models.Model([cataract_model.inputs], [last_conv_layer.output,cataract_model.output])
-            # with tf.GradientTape() as tape:
-            #     conv_outputs, predictions = grad_model(preprocessed_input)
-            #     loss = tf.reduce_mean(predictions[:, 0]).numpy()
-            # grads = tape.gradient(loss, conv_outputs)[0]
-            # pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-            # heatmap = tf.reduce_mean(tf.multiply(pooled_grads, conv_outputs), axis=-1)
-            # heatmap = np.maximum(heatmap, 0)
-            # heatmap /= np.max(heatmap)
-
-            # # Resize the heatmap to match the input image size
-            # heatmap_resized = cv2.resize(heatmap, (input_image.width, input_image.height))
-
-            # # Apply the heatmap overlay
-            # image = cv2.imread(input_image_path)
-            # heatmap_overlay = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
-            # output_image = cv2.addWeighted(image, 0.6, heatmap_overlay, 0.4, 0)
-
-            # # Save the output image with the heatmap overlay
-            # output_image_path = 'D:/major-project/backend/upload/heatmap.jpg'
-            # cv2.imwrite(output_image_path, output_image)
-
         elif(user_selected_choice==2): ##myopia detection
             myopia_model=load_model(file_path + 'Myopia.hdf5')
             pred1 = myopia_model.predict_generator(predicting_generator)
@@ -84,14 +66,14 @@ def check_for_disease(user_selected_choice):
             
 
         elif(user_selected_choice==3):  ##hypertension detection
-            hyp_gla_model=load_model(file_path + 'Hyp_Gla.hdf5')
+            hyp_gla_model=load_model(file_path + 'HN1.hdf5')
             pred1 = hyp_gla_model.predict_generator(predicting_generator)
             predicted_class_idx1=np.argmax(pred1,axis=1) ##1 for hypertension
             predPerc = pred1[0][predicted_class_idx1]
             
         
         elif(user_selected_choice==4):##glaucoma detection
-            hyp_gla_model=load_model(file_path + 'Hyp_Gla.hdf5')
+            hyp_gla_model=load_model(file_path + 'GN1.hdf5')
             pred1 = hyp_gla_model.predict_generator(predicting_generator)
             predicted_class_idx1=np.argmax(pred1,axis=1)  ##0 for glaucoma
             predPerc = pred1[0][predicted_class_idx1]
@@ -114,11 +96,17 @@ def check_for_disease(user_selected_choice):
 
 @app.route('/check_disease', methods=['POST'])
 def check_disease():
-    print(request.json)
-    user_selected_choice = int(request.json['user_selected_choice'])
-    result = check_for_disease(user_selected_choice)
-    predicted_class_idx, percentage = result[0], result[1][0]
-    return jsonify({'predicted_class_idx': str(predicted_class_idx), 'percentage':str(percentage)})
+    validity = check_image_validity()
+    if validity == 0:
+        return json.dumps({'valid':0})
+    diseases = [int(i) for i in request.json['user_selected_choice'].split(',')]
+    results = []
+    for i in diseases:
+        result = check_for_disease(i)
+        predicted_class_idx, percentage = int(result[0]), float(result[1][0])
+        results.append([predicted_class_idx, percentage])
+    return json.dumps({'valid':0,'result': results})
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
