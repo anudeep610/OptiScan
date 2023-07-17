@@ -112,7 +112,7 @@ const generatePDF = async(name, age, gender, email, diseases) => {
 
         doc.fontSize(20).text(`Disease: ${diseaseName}`, 35, doc.y);
         doc.moveDown();
-        doc.fontSize(20).text(`Prediction percentage: ${(parseFloat(percentage) * 100).toString()}`, 35, doc.y);
+        doc.fontSize(20).text(`Prediction percentage: ${(parseFloat(percentage) * 100).toFixed(3).toString()}`, 35, doc.y);
         doc.moveDown(2);
     }
 
@@ -162,6 +162,7 @@ const generatePDF = async(name, age, gender, email, diseases) => {
 
     doc.fontSize(12).font('Helvetica').text('By following these tips, you can help keep your eyes healthy and reduce the risk of eye-related problems.');
 
+    doc.moveDown();
 
     doc.fontSize(13)
         .font('Helvetica-BoldOblique')

@@ -24,7 +24,7 @@ const FormPage = () => {
         gender: "",
         disease: [],
         image: null,
-        email:""
+        email: ""
     });
 
     const handlechange = (event) => {
@@ -32,16 +32,16 @@ const FormPage = () => {
         if (name === 'disease') {
             if (checked) {
                 setFormData((prevFormData) => ({
-                ...prevFormData,
-                disease: [...prevFormData.disease, value],
+                    ...prevFormData,
+                    disease: [...prevFormData.disease, value],
                 }));
             } else {
                 setFormData((prevFormData) => ({
-                ...prevFormData,
-                disease: prevFormData.disease.filter((d) => d !== value),
+                    ...prevFormData,
+                    disease: prevFormData.disease.filter((d) => d !== value),
                 }));
             }
-            } else {
+        } else {
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 [name]: value,
@@ -66,7 +66,7 @@ const FormPage = () => {
             handleShow();
             return;
         }
-        
+
         setLoading(true);
         const formDataObj = new FormData();
         formDataObj.append('name', formData.name);
@@ -90,28 +90,28 @@ const FormPage = () => {
             const resultData = response.data.data; // Array containing the result data
             // Construct the table HTML
             const tableHTML = `
-              <table>
-                <thead>
-                  <tr>
-                    <th style="padding-right: 10px;">Disease</th>
-                    <th>Percentage</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${resultData
-                    .map(
-                      (result) => `
-                        <tr>
-                          <td style="padding-right: 10px;">${result[0]}</td>
-                          <td>${(result[1] * 100).toFixed(2)}</td>
-                        </tr>
-                      `
-                    )
-                    .join("")}
-                </tbody>
-              </table>
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="padding-right: 10px;">Disease</th>
+                        <th>Percentage</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        ${resultData
+                            .map(
+                                (result) => `
+                                <tr>
+                                <td style="padding-right: 10px;">${result[0]}</td>
+                                <td>${(result[1] * 100).toFixed(2)}</td>
+                                </tr>
+                            `
+                            )
+                            .join("")}
+                    </tbody>
+                </table>
             `;
-            setAlertText( <div> <p>{response.data.message}</p> <div dangerouslySetInnerHTML={{ __html: tableHTML }}></div> </div>); // Set the table HTML as the alert text
+            setAlertText(<div> <p>{response.data.message}</p> <div dangerouslySetInnerHTML={{ __html: tableHTML }}></div> </div>); // Set the table HTML as the alert text
             handleShow();
             setFormData({
                 name: "",
@@ -121,7 +121,7 @@ const FormPage = () => {
                 image: null,
                 email: ""
             });
-        }else if(response && response.data.type === "success" && response.data.valid === 0){
+        } else if (response && response.data.type === "success" && response.data.valid === 0) {
             setAlertText(response.data.message);
             handleShow();
             setFormData({
@@ -132,7 +132,7 @@ const FormPage = () => {
                 image: null,
                 email: ""
             });
-        }else {
+        } else {
             console.log(response);
             setAlertText("something went wrong ;)");
             handleShow();
@@ -142,7 +142,7 @@ const FormPage = () => {
                 gender: "",
                 disease: [],
                 image: null,
-                email:""
+                email: ""
             });
         }
         setLoading(false);

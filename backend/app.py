@@ -43,7 +43,6 @@ def check_image_validity():
     validity_model = load_model(file_path + 'input.hdf5')
     pred1 = validity_model.predict_generator(predicting_generator)
     max = np.argmax(pred1)
-    print(max)
     if max == 0:
         return 1
     else: 
@@ -105,7 +104,7 @@ def check_disease():
         result = check_for_disease(i)
         predicted_class_idx, percentage = int(result[0]), float(result[1][0])
         results.append([predicted_class_idx, percentage])
-    return json.dumps({'valid':0,'result': results})
+    return json.dumps({'valid':1,'result': results})
 
 
 if __name__ == '__main__':
