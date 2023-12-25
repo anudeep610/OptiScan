@@ -6,6 +6,8 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
+const path = '';
+const email = '';
 
 //put the corresponding values here
 const config = {
@@ -75,10 +77,10 @@ const getDiseaseName = async(option, result) => {
 const generatePDF = async(name, age, gender, email, diseases) => {
     const doc = new PDFDocument();
 
-    const writeStream = fs.createWriteStream('D:/major-project/backend/upload/report.pdf');
+    const writeStream = fs.createWriteStream(path + '/backend/upload/report.pdf');
     doc.pipe(writeStream);
 
-    doc.image('D:/major-project/backend/upload/logo.png', 50, 52, { width: 150 })
+    doc.image(path + '/backend/upload/logo.png', 50, 52, { width: 150 })
 		.fillColor('#444444')
 		.fontSize(10)
 		.text('Siddaganga Institute Of Technology', 200, 65, { align: 'right' })
@@ -99,7 +101,7 @@ const generatePDF = async(name, age, gender, email, diseases) => {
     doc.moveTo(35, 270).lineTo(570, 270).stroke();
     doc.moveTo(35, 272).lineTo(570, 272).stroke();
 
-    doc.image('D:/major-project/backend/upload/iris.jpg', 410, 310, {
+    doc.image(path + '/backend/upload/iris.jpg', 410, 310, {
         width: 125,
         height: 125
     });
@@ -210,14 +212,14 @@ const sendEmailWithAttachment = async (name, toEmail) => {
 
     const mail = mailGenerator.generate(response);
     const message = {
-        from:"anudeep.hanuman@gmail.com",
+        from: email,
         to:toEmail,
         subject:"OptiScan Results",
         html:mail,
         attachments: [ 
             {
                 filename: 'report.pdf',
-                path: "D:/major-project/backend/upload/report.pdf",
+                path: path + "/backend/upload/report.pdf",
                 cid: 'uniqreceipt_test.pdf' 
             }
         ]
