@@ -6,8 +6,7 @@ node_modules
 .pnp.js
 __pycache__
 .pyc
-trained_models
-.hdf5
+*.hdf5
 
 # testing
 /coverage
