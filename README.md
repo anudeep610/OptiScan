@@ -38,3 +38,17 @@ A web application built with React and NodeJs that allows users to analyze their
 6. Replace the fields of config object in /backend/routes/submission.js with the approitate parameters.
 7. Upload all the DL model files in it.(files with extension .hdf5)
     Note : You contact me on my email for the models
+
+UI
+
+![Alt text](./readme_images/home_screen.png)
+
+![Alt text](./readme_images/how_it_works.png)
+
+![Alt text](./readme_images/upload_form.png)
+
+![Alt text](./readme_images/result.png)
+
+![Alt text](./readme_images/email_notification.png)
+
+![Alt text](./readme_images/report.png)
