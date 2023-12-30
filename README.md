@@ -17,7 +17,7 @@ A web application built with React and NodeJs that allows users to analyze their
    git clone https://github.com/anudeep610/major-project.git
    ```
 2. Add Local path upto the repo in 
-    line 9 in /backend/routes/submission.js
+    line 9 in /backend/routes/submission.js and
     line 12 in /backend/app.py
 3. Go into the frontend folder and install the required dependencies and start:
     ```bash
