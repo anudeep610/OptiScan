@@ -10,10 +10,10 @@ import json
 from keras.preprocessing.image import ImageDataGenerator
 
 path = ''
-file_path = path + '/trained_models/'
+file_path = path + '/backend/trained_models/'
 imageSize=224
-image_details_data=pd.read_csv(path + '/upload/image.csv') 
-images_directory=path + '/upload' 
+image_details_data=pd.read_csv(path + '/backend/upload/image.csv') 
+images_directory=path + '/backend/upload' 
 
 images=image_details_data['image']
 predict_images=pd.DataFrame(images,columns=['image'])
